@@ -1,0 +1,25 @@
+{
+    "active_profile": "Default",
+    "errors": {},
+    "last_restarted": "Tue Aug 17 13:11:58 2021",
+    "service_status": {
+      "api": "on",
+      "auth": "on",
+      "bridge": "on",
+      "client_query": "on",
+      "crl": "on",
+      "daemon_pre": "on",
+      "db_push": "on",
+      "ip6tables_live": "on",
+      "ip6tables_openvpn": "on",
+      "iptables_live": "on",
+      "iptables_openvpn": "on",
+      "iptables_web": "on",
+      "log": "on",
+      "openvpn_0": "on",
+      "openvpn_1": "on",
+      "subscription": "on",
+      "user": "on",
+      "web": "on"
+    }
+  }
