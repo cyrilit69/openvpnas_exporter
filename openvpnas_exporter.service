@@ -1,0 +1,8 @@
+[Unit]
+Description=OpenVPN-AS Prometheus Exporter
+
+[Service]
+ExecStart=/usr/sbin/openvpnas_exporter
+
+[Install]
+WantedBy=multi-user.target
