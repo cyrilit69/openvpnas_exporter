@@ -1,13 +1,11 @@
 /*
-	Someone will kill me for this code
+	Someone could kill me for this code
 */
 
 package statusparser
 
 import (
 	"encoding/json"
-	"strconv"
-	"strings"
 
 	"github.com/cyrilit69/openvpnas_exporter/models"
 )
@@ -34,18 +32,7 @@ type raw struct {
 }
 
 type vpnData struct {
-	Clients []ClientData `json:"client_list"`
-}
-
-type ClientData struct {
-	CommonName       string
-	BytesReceived    float64
-	BytesSend        float64
-	ConnectedSinceTs float64
-	ClientId         string
-	PeerId           string
-	RealAddr         string
-	VPNAddr          string
+	Clients []models.VPNStatus `json:"client_list"`
 }
 
 func (r *raw) UnmarshalJSON(data []byte) error {
@@ -60,33 +47,6 @@ func (r *raw) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (c *ClientData) UnmarshalJSON(data []byte) error {
-	var v []interface{}
-	if err := json.Unmarshal(data, &v); err != nil {
-		return err
-	}
-	c.CommonName = v[0].(string)
-	c.ClientId = v[9].(string)
-	c.PeerId = v[10].(string)
-	c.RealAddr = strings.Split(v[1].(string), ":")[0]
-	c.VPNAddr = v[2].(string)
-	res, err := strconv.ParseFloat(v[4].(string), 64)
-	if err != nil {
-		c.BytesReceived = 0
-	} else {
-		c.BytesReceived = res
-	}
-	c.BytesSend, err = strconv.ParseFloat(v[5].(string), 64)
-	if err != nil {
-		c.BytesSend = 0
-	}
-	c.ConnectedSinceTs, err = strconv.ParseFloat(v[7].(string), 64)
-	if err != nil {
-		c.ConnectedSinceTs = 0
-	}
-	return nil
-}
-
 func Parse(in []byte) ([]*models.VPNStatus, error) {
 	resArr := make([]*models.VPNStatus, 0)
 	r := new(raw)
@@ -97,20 +57,9 @@ func Parse(in []byte) ([]*models.VPNStatus, error) {
 	}
 
 	for k, v := range r.Data {
-		for _, cl := range v.Clients {
-			res := new(models.VPNStatus)
-
-			res.ClientVPN = k
-			res.ClientName = cl.CommonName
-			res.ClientId = cl.ClientId
-			res.ClientPeerId = cl.PeerId
-			res.RealAddr = cl.RealAddr
-			res.VPNAddr = cl.VPNAddr
-			res.BytesReceived = cl.BytesReceived
-			res.BytesSend = cl.BytesSend
-			res.ConnectedSinceTs = cl.ConnectedSinceTs
-
-			resArr = append(resArr, res)
+		for i := range v.Clients {
+			v.Clients[i].ClientVPN = k
+			resArr = append(resArr, &v.Clients[i])
 		}
 	}
 	return resArr, nil

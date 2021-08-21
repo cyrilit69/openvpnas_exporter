@@ -50,7 +50,7 @@ func (e *Exporter) summaryParse(data []byte, ch chan<- prometheus.Metric) {
 	ch <- prometheus.MustNewConstMetric(summaryActiveProfile, prometheus.GaugeValue, 1, s.ActiveProfile)
 	ch <- prometheus.MustNewConstMetric(summaryLastRestarted, prometheus.GaugeValue, s.LastRestarted)
 	ch <- prometheus.MustNewConstMetric(summaryErrors, prometheus.GaugeValue, s.ErrorsTotal)
-	for k, v := range s.ServiceStatusTotal {
+	for k, v := range s.ServiceStatus {
 		ch <- prometheus.MustNewConstMetric(summaryStatus, prometheus.GaugeValue, v, k)
 	}
 }

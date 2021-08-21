@@ -67,7 +67,7 @@ func TestValidParse(t *testing.T) {
 	t.Log("active_profile", res.ActiveProfile)
 	t.Log("errors", res.ErrorsTotal)
 	t.Log("last_restarted", res.LastRestarted)
-	t.Log("service_status", res.ServiceStatusTotal)
+	t.Log("service_status", res.ServiceStatus)
 	if res.ActiveProfile != "Default" {
 		t.Fail()
 	}
@@ -82,7 +82,7 @@ func TestValidWithErrorsParse(t *testing.T) {
 	t.Log("active_profile", res.ActiveProfile)
 	t.Log("errors", res.ErrorsTotal)
 	t.Log("last_restarted", res.LastRestarted)
-	t.Log("service_status", res.ServiceStatusTotal)
+	t.Log("service_status", res.ServiceStatus)
 	if res.ErrorsTotal == 0 {
 		t.Errorf("Errors should be: get %v, expected: something > 0", res.ErrorsTotal)
 	}
