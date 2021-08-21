@@ -7,34 +7,28 @@ const (
 )
 
 var (
-	// VPNSummary metrics
+	// Status metrics
 	summaryParsed = prometheus.NewDesc(
-		prometheus.BuildFQName(namespace, "summary", "parsed"),
-		"Is 'sacli VPNSummary' output parsed succesfully",
+		prometheus.BuildFQName(namespace, "status", "parsed"),
+		"Is 'sacli status' output parsed succesfully",
 		nil, nil,
 	)
 
-	summaryActiveProfile = prometheus.NewDesc(
-		prometheus.BuildFQName(namespace, "summary", "active_profile"),
-		"The name of active profile",
-		[]string{"name"}, nil,
-	)
-
 	summaryErrors = prometheus.NewDesc(
-		prometheus.BuildFQName(namespace, "summary", "errors"),
-		"Count of errors in VPNSummary output",
+		prometheus.BuildFQName(namespace, "status", "errors"),
+		"Count of errors in sacli status output",
 		nil, nil,
 	)
 
 	summaryLastRestarted = prometheus.NewDesc(
-		prometheus.BuildFQName(namespace, "summary", "last_restarted"),
+		prometheus.BuildFQName(namespace, "status", "last_restarted"),
 		"Timestamp of the last restart",
 		nil, nil,
 	)
 
 	summaryStatus = prometheus.NewDesc(
-		prometheus.BuildFQName(namespace, "summary", "service_status"),
-		"Status of all services fro VPNSummary output",
+		prometheus.BuildFQName(namespace, "status", "service_state"),
+		"States of all services from sacli status output",
 		[]string{"service"}, nil,
 	)
 
@@ -118,35 +112,34 @@ var (
 	)
 	// VPNStatus metrics
 	statusParsed = prometheus.NewDesc(
-		prometheus.BuildFQName(namespace, "status", "parsed"),
+		prometheus.BuildFQName(namespace, "vpnstatus", "parsed"),
 		"Is 'sacli VPNStatus' output parsed succesfully",
 		nil, nil,
 	)
 	statusClientInfo = prometheus.NewDesc(
-		prometheus.BuildFQName(namespace, "status", "client_info"),
+		prometheus.BuildFQName(namespace, "vpnstatus", "client_info"),
 		"All Clients info", []string{"vpn", "common_name", "id", "peer_id", "real_addr", "vpn_addr"}, nil,
 	)
 	statusClientBytesReceived = prometheus.NewDesc(
-		prometheus.BuildFQName(namespace, "status", "client_bytes_received"),
-		"Bytes received by client", []string{"common_name"}, nil,
+		prometheus.BuildFQName(namespace, "vpnstatus", "client_bytes_received"),
+		"Bytes received by client", []string{"vpn", "common_name", "id", "peer_id", "real_addr", "vpn_addr"}, nil,
 	)
 	statusClientBytesSend = prometheus.NewDesc(
-		prometheus.BuildFQName(namespace, "status", "client_bytes_send"),
-		"Bytes sent by client", []string{"common_name"}, nil,
+		prometheus.BuildFQName(namespace, "vpnstatus", "client_bytes_send"),
+		"Bytes sent by client", []string{"vpn", "common_name", "id", "peer_id", "real_addr", "vpn_addr"}, nil,
 	)
 	statusClientConnectedSince = prometheus.NewDesc(
-		prometheus.BuildFQName(namespace, "status", "client_connected_since"),
-		"Timestamp of the last clients connect", []string{"common_name"}, nil,
+		prometheus.BuildFQName(namespace, "vpnstatus", "client_connected_since"),
+		"Timestamp of the last clients connect", []string{"vpn", "common_name", "id", "peer_id", "real_addr", "vpn_addr"}, nil,
 	)
 )
 
 // This map is used just to simplify the Describe() func and create
 // a slice of metrics with specific length
 var OpenVpnASMetrics = map[string][]*prometheus.Desc{
-	// The list of exporter metrics from 'sacli VPNSummary' command
-	"VPNSummary": []*prometheus.Desc{
+	// The list of exporter metrics from 'sacli status' command
+	"status": []*prometheus.Desc{
 		summaryParsed,
-		summaryActiveProfile,
 		summaryErrors,
 		summaryLastRestarted,
 		summaryStatus,

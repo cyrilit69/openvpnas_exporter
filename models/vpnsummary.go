@@ -13,8 +13,8 @@ import (
 	"time"
 )
 
-type VPNSummary struct {
-	ActiveProfile string
+type Status struct {
+	// ActiveProfile string
 	ErrorsTotal   float64
 	LastRestarted float64
 	ServiceStatus map[string]float64
@@ -27,7 +27,7 @@ type VPNSummary struct {
 // 	ServiceStatus map[string]string      `json:"service_status"`
 // }
 
-func (c *VPNSummary) UnmarshalJSON(data []byte) error {
+func (c *Status) UnmarshalJSON(data []byte) error {
 	var v map[string]interface{}
 	if err := json.Unmarshal(data, &v); err != nil {
 		return err
@@ -35,10 +35,10 @@ func (c *VPNSummary) UnmarshalJSON(data []byte) error {
 
 	var ok bool
 
-	c.ActiveProfile, ok = v["active_profile"].(string)
-	if !ok {
-		log.Printf("cannot get 'active_profile' from the sacli output: %v", string(data))
-	}
+	// c.ActiveProfile, ok = v["active_profile"].(string)
+	// if !ok {
+	// 	log.Printf("cannot get 'active_profile' from the sacli output: %v", string(data))
+	// }
 
 	errs, ok := v["errors"].(map[string]interface{})
 	if !ok {

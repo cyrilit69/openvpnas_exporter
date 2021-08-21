@@ -2,13 +2,19 @@
 
 This is a pretty raw OpenVPN AS Prometheus Exporter that uses `sacli` util to get metrics.
 
-For now it parses the ouutput of the following commands:
+For now it parses the output of the following commands:
 
 * sacli VPNStatus
 * sacli SubscriptionStatus
-* sacli VPNSummary
+* sacli status
 
-Due to the lack of information about sacli I cannot be sure if exporter can parse any possible outputs right. For example, I cannot find any example of the output with errors and cannot reproduce it.
+## Test data
+
+Due to the lack of information about sacli I cannot be sure if exporter can parse any possible outputs right. For example, I cannot find any example of the output with errors and cannot reproduce it. So, shortly:
+
+**I need more test data!**
+
+And I need this data as is (without personal data, ofc). For example, `sacli SubscriptionStatus` output is not a valid JSON, it's Python's dict. I'm almost sure that exporter cannot process some possible cases.
 
 ## Usage
 CLI:
@@ -20,16 +26,17 @@ CLI:
   -web.telemetry-path string
         Path under which to expose metrics (default "/metrics")
 ```
+You should run exporter as a *openvpn* user (or as root). It's required to use `sacli`. For this reason I suggest to run it as systemd unit instead of using docker.
 
 ## Metrics
 Metric | Labels | Value
 --- | --- | ---
-openvpnas_status_parsed | | 0 or 1
-openvpnas_status_client_bytes_received | common_name | int
-openvpnas_status_client_bytes_send | common_name | int
-openvpnas_status_client_connected_since | common_name | timestamp
-openvpnas_status_client_info | common_name, id, peer_id, real_addr, vpn_addr, vpn | always 1 (or absent)
-openvpnas_status_parsed | | 0 or 1
+openvpnas_vpnstatus_parsed | | 0 or 1
+openvpnas_vpnstatus_client_bytes_received | common_name, id, peer_id, real_addr, vpn_addr, vpn| int
+openvpnas_vpnstatus_client_bytes_send | common_name, id, peer_id, real_addr, vpn_addr, vpn| int
+openvpnas_vpnstatus_client_connected_since | common_name, id, peer_id, real_addr, vpn_addr, vpn| timestamp
+openvpnas_vpnstatus_client_info | common_name, id, peer_id, real_addr, vpn_addr, vpn | always 1 (or absent)
+openvpnas_vpnstatus_parsed | | 0 or 1
 openvpnas_subscription_agent_disabled | | 0 or 1
 openvpnas_subscription_cc_limit | | int
 openvpnas_subscription_current_cc | | int
@@ -48,11 +55,10 @@ openvpnas_subscription_state | state | always 1
 openvpnas_subscription_type | type | always 1
 openvpnas_subscription_updates_failed | | int
 openvpnas_subscription_parsed | | 0 or 1
-openvpnas_summary_active_profile | name | always 1
-openvpnas_summary_errors | | int
-openvpnas_summary_last_restarted | | timestamp
-openvpnas_summary_service_status | service | 0 or 1
-openvpnas_summary_parsed | | 0 or 1
+openvpnas_status_errors | | int
+openvpnas_status_last_restarted | | timestamp
+openvpnas_status_service_state | service | 0 or 1
+openvpnas_status_parsed | | 0 or 1
 
 ## Comparison with Alternatives
 [lfdominguez/openvpn-access-exporter](https://github.com/lfdominguez/openvpn-access-exporter)

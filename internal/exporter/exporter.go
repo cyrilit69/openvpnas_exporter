@@ -7,7 +7,7 @@ import (
 
 	"github.com/cyrilit69/openvpnas_exporter/internal/statusparser"
 	"github.com/cyrilit69/openvpnas_exporter/internal/substatusparser"
-	"github.com/cyrilit69/openvpnas_exporter/internal/summaryparser"
+	"github.com/cyrilit69/openvpnas_exporter/internal/vpnstatusparser"
 
 	"github.com/prometheus/client_golang/prometheus"
 )
@@ -40,14 +40,14 @@ func (e *Exporter) runSacli(arg string) ([]byte, error) {
 }
 
 func (e *Exporter) summaryParse(data []byte, ch chan<- prometheus.Metric) {
-	s, err := summaryparser.Parse(data)
+	s, err := statusparser.Parse(data)
 	if err != nil {
-		log.Printf("error during VPNSummary parsing: %v", err)
+		log.Printf("error during status parsing: %v", err)
 		ch <- prometheus.MustNewConstMetric(summaryParsed, prometheus.GaugeValue, 0)
 		return
 	}
 	ch <- prometheus.MustNewConstMetric(summaryParsed, prometheus.GaugeValue, 1)
-	ch <- prometheus.MustNewConstMetric(summaryActiveProfile, prometheus.GaugeValue, 1, s.ActiveProfile)
+	//ch <- prometheus.MustNewConstMetric(summaryActiveProfile, prometheus.GaugeValue, 1, s.ActiveProfile)
 	ch <- prometheus.MustNewConstMetric(summaryLastRestarted, prometheus.GaugeValue, s.LastRestarted)
 	ch <- prometheus.MustNewConstMetric(summaryErrors, prometheus.GaugeValue, s.ErrorsTotal)
 	for k, v := range s.ServiceStatus {
@@ -91,7 +91,7 @@ func (e *Exporter) subsParse(data []byte, ch chan<- prometheus.Metric) {
 }
 
 func (e *Exporter) statusParse(data []byte, ch chan<- prometheus.Metric) {
-	s, err := statusparser.Parse(data)
+	s, err := vpnstatusparser.Parse(data)
 	if err != nil {
 		log.Printf("error during VPNStatus parsing: %v", err)
 		ch <- prometheus.MustNewConstMetric(statusParsed, prometheus.GaugeValue, 0)
@@ -100,9 +100,30 @@ func (e *Exporter) statusParse(data []byte, ch chan<- prometheus.Metric) {
 	ch <- prometheus.MustNewConstMetric(statusParsed, prometheus.GaugeValue, 1)
 	for _, c := range s {
 		// float64
-		ch <- prometheus.MustNewConstMetric(statusClientBytesReceived, prometheus.GaugeValue, c.BytesReceived, c.ClientName)
-		ch <- prometheus.MustNewConstMetric(statusClientBytesSend, prometheus.GaugeValue, c.BytesSend, c.ClientName)
-		ch <- prometheus.MustNewConstMetric(statusClientConnectedSince, prometheus.GaugeValue, c.ConnectedSinceTs, c.ClientName)
+		ch <- prometheus.MustNewConstMetric(statusClientBytesReceived, prometheus.GaugeValue, c.BytesReceived,
+			c.ClientVPN,
+			c.ClientName,
+			c.ClientId,
+			c.ClientPeerId,
+			c.RealAddr,
+			c.VPNAddr,
+		)
+		ch <- prometheus.MustNewConstMetric(statusClientBytesSend, prometheus.GaugeValue, c.BytesSend,
+			c.ClientVPN,
+			c.ClientName,
+			c.ClientId,
+			c.ClientPeerId,
+			c.RealAddr,
+			c.VPNAddr,
+		)
+		ch <- prometheus.MustNewConstMetric(statusClientConnectedSince, prometheus.GaugeValue, c.ConnectedSinceTs,
+			c.ClientVPN,
+			c.ClientName,
+			c.ClientId,
+			c.ClientPeerId,
+			c.RealAddr,
+			c.VPNAddr,
+		)
 		// string ("vpn", "common_name", "id", "peer_id", "real_addr", "vpn_addr")
 		ch <- prometheus.MustNewConstMetric(statusClientInfo, prometheus.GaugeValue, 1,
 			c.ClientVPN,
@@ -117,10 +138,10 @@ func (e *Exporter) statusParse(data []byte, ch chan<- prometheus.Metric) {
 }
 
 func (e *Exporter) Collect(ch chan<- prometheus.Metric) {
-	// Working with sacli VPNSummary
-	summaryData, err := e.runSacli("VPNSummary")
+	// Working with sacli status
+	summaryData, err := e.runSacli("status")
 	if err != nil {
-		log.Printf("cannot execute 'sacli VPNSummary' command: %v", err)
+		log.Printf("cannot execute 'sacli status' command: %v", err)
 		ch <- prometheus.MustNewConstMetric(summaryParsed, prometheus.GaugeValue, 0)
 	} else {
 		e.summaryParse(summaryData, ch)

@@ -82,7 +82,7 @@ vpnstatus = """
 
 """
 
-vpnsummary = """{
+status = """{
     "active_profile": "Default",
     "errors": {},
     "last_restarted": "Tue Aug 17 13:11:58 2021",
@@ -141,7 +141,7 @@ if sys.argv[1].lower() == 'vpnstatus':
     print(vpnstatus)
 elif sys.argv[1].lower() == 'subscriptionstatus':
     print(SubscriptionStatus)
-elif sys.argv[1].lower() == 'vpnsummary':
-    print(vpnsummary)
+elif sys.argv[1].lower() == 'status':
+    print(status)
 else:
     print("blablabla read --help")

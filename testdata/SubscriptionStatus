@@ -1,0 +1,20 @@
+{
+	'agent_disabled': False,
+	'cc_limit': 250,
+	'current_cc': 168,
+	'error': None,
+	'fallback_cc': 2,
+	'grace_period': 30,
+	'last_successful_update': 1629457445,
+	'last_successful_update_age': 65,
+	'max_cc': 250,
+	'name': 'Subscription 1',
+	'next_update': 1629457645,
+	'next_update_in': 134,
+	'notes': [],
+	'overdraft': False,
+	'server': 'asb.sts.openvpn.net',
+	'state': 'SUBSCRIPTION_OK',
+	'type': '-',
+	'updates_failed': 0
+}
