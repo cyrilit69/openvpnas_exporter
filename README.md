@@ -16,7 +16,7 @@ CLI:
   -sacli-path string
         Path to 'sacli' script (default "/usr/local/openvpn_as/scripts/sacli")
   -web.listen-address string
-        Address to listen on for telemetry (default ":9186")
+        Address to listen on for telemetry (default ":9185")
   -web.telemetry-path string
         Path under which to expose metrics (default "/metrics")
 ```
