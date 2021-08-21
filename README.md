@@ -5,7 +5,7 @@ This is a pretty raw OpenVPN AS Prometheus Exporter that uses `sacli` util to ge
 For now it parses the ouutput of the following commands:
 
 * sacli VPNStatus
-* sacli SubscriptionInfo
+* sacli SubscriptionStatus
 * sacli VPNSummary
 
 Due to the lack of information about sacli I cannot be sure if exporter can parse any possible outputs right. For example, I cannot find any example of the output with errors and cannot reproduce it.
@@ -57,6 +57,6 @@ openvpnas_summary_parsed | | 0 or 1
 ## Comparison with Alternatives
 [lfdominguez/openvpn-access-exporter](https://github.com/lfdominguez/openvpn-access-exporter)
 
-It uses `log.db` file and doesn't provide license ad services info
+It uses `log.db` file and doesn't provide license and services info
 
 All others work with common OpenVPN only :(
