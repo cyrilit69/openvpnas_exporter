@@ -66,3 +66,15 @@ openvpnas_status_parsed | | 0 or 1
 It uses `log.db` file and doesn't provide license and services info
 
 All others work with common OpenVPN only :(
+
+## Grafana dashboard
+
+Not published yet but you can find JSON in grafana folder.
+
+<img src="grafana/dashboard_screenshot.png" alt="Grafana dashboard" width="600"/>
+
+## TODO
+
+* Look throught another sacli commands and add useful ones
+* Add posibility to select wich commands should be executed/parsed (collectors)
+* Correct few metrics names and descriptions (maybe)
