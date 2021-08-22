@@ -71,7 +71,7 @@ All others work with common OpenVPN only :(
 
 Not published yet but you can find JSON in grafana folder.
 
-<img src="grafana/dashboard_screenshot.png" alt="Grafana dashboard" width="600"/>
+<img src="grafana/dashboard_screenshot.png" alt="Grafana dashboard" width="800"/>
 
 ## TODO
 
