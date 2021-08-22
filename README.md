@@ -36,7 +36,6 @@ openvpnas_vpnstatus_client_bytes_received | common_name, id, peer_id, real_addr,
 openvpnas_vpnstatus_client_bytes_send | common_name, id, peer_id, real_addr, vpn_addr, vpn| int
 openvpnas_vpnstatus_client_connected_since | common_name, id, peer_id, real_addr, vpn_addr, vpn| timestamp
 openvpnas_vpnstatus_client_info | common_name, id, peer_id, real_addr, vpn_addr, vpn | always 1 (or absent)
-openvpnas_vpnstatus_parsed | | 0 or 1
 openvpnas_subscription_agent_disabled | | 0 or 1
 openvpnas_subscription_cc_limit | | int
 openvpnas_subscription_current_cc | | int
