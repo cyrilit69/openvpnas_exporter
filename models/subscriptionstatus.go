@@ -39,12 +39,13 @@ func (c *SubscriptionStatus) UnmarshalJSON(data []byte) error {
 	if err := json.Unmarshal(data, &v); err != nil {
 		return err
 	}
-
+	failedToParse := []string{}
 	var ok bool
+
 	// boolean
 	adis, ok := v["agent_disabled"].(bool)
 	if !ok {
-		log.Printf("cannot get 'agent_disabled' from the sacli output: %v", string(data))
+		failedToParse = append(failedToParse, "agent_disabled")
 	}
 	if adis {
 		c.AgentDisabled = 1
@@ -52,7 +53,7 @@ func (c *SubscriptionStatus) UnmarshalJSON(data []byte) error {
 
 	od, ok := v["overdraft"].(bool)
 	if !ok {
-		log.Printf("cannot get 'overdraft' from the sacli output: %v", string(data))
+		failedToParse = append(failedToParse, "overdraft")
 	}
 	if od {
 		c.Overdraft = 1
@@ -61,60 +62,60 @@ func (c *SubscriptionStatus) UnmarshalJSON(data []byte) error {
 	// ints
 	c.CcLimit, ok = v["cc_limit"].(float64)
 	if !ok {
-		log.Printf("cannot get 'cc_limit' from the sacli output: %v", string(data))
+		failedToParse = append(failedToParse, "cc_limit")
 	}
 	c.CurrentCc, ok = v["current_cc"].(float64)
 	if !ok {
-		log.Printf("cannot get 'current_cc' from the sacli output: %v", string(data))
+		failedToParse = append(failedToParse, "current_cc")
 	}
 	c.FallbackCc, ok = v["fallback_cc"].(float64)
 	if !ok {
-		log.Printf("cannot get 'fallback_cc' from the sacli output: %v", string(data))
+		failedToParse = append(failedToParse, "fallback_cc")
 	}
 	c.GracePeriod, ok = v["grace_period"].(float64)
 	if !ok {
-		log.Printf("cannot get 'grace_period' from the sacli output: %v", string(data))
+		failedToParse = append(failedToParse, "grace_period")
 	}
 	c.LastSuccessfulUpdate, ok = v["last_successful_update"].(float64)
 	if !ok {
-		log.Printf("cannot get 'last_successful_update' from the sacli output: %v", string(data))
+		failedToParse = append(failedToParse, "last_successful_update")
 	}
 	c.LastSuccessfulUpdateAge, ok = v["last_successful_update_age"].(float64)
 	if !ok {
-		log.Printf("cannot get 'last_successful_update_age' from the sacli output: %v", string(data))
+		failedToParse = append(failedToParse, "last_successful_update_age")
 	}
 	c.MaxCc, ok = v["max_cc"].(float64)
 	if !ok {
-		log.Printf("cannot get 'max_cc' from the sacli output: %v", string(data))
+		failedToParse = append(failedToParse, "max_cc")
 	}
 	c.NextUpdate, ok = v["next_update"].(float64)
 	if !ok {
-		log.Printf("cannot get 'next_update' from the sacli output: %v", string(data))
+		failedToParse = append(failedToParse, "next_update")
 	}
 	c.NextUpdateIn, ok = v["next_update_in"].(float64)
 	if !ok {
-		log.Printf("cannot get 'next_update_in' from the sacli output: %v", string(data))
+		failedToParse = append(failedToParse, "next_update_in")
 	}
 	c.UpdatesFailed, ok = v["updates_failed"].(float64)
 	if !ok {
-		log.Printf("cannot get 'updates_failed' from the sacli output: %v", string(data))
+		failedToParse = append(failedToParse, "updates_failed")
 	}
 	// strings
 	c.Name = v["name"].(string)
 	if !ok {
-		log.Printf("cannot get 'name' from the sacli output: %v", string(data))
+		failedToParse = append(failedToParse, "name")
 	}
 	c.Server = v["server"].(string)
 	if !ok {
-		log.Printf("cannot get 'server' from the sacli output: %v", string(data))
+		failedToParse = append(failedToParse, "server")
 	}
 	c.State = v["state"].(string)
 	if !ok {
-		log.Printf("cannot get 'state' from the sacli output: %v", string(data))
+		failedToParse = append(failedToParse, "state")
 	}
 	c.Type = v["type"].(string)
 	if !ok {
-		log.Printf("cannot get 'type' from the sacli output: %v", string(data))
+		failedToParse = append(failedToParse, "type")
 	}
 	// errors
 	if v["error"] != nil {
@@ -122,6 +123,9 @@ func (c *SubscriptionStatus) UnmarshalJSON(data []byte) error {
 	}
 	for _, n := range v["notes"].([]interface{}) {
 		c.Notes = append(c.Notes, fmt.Sprint(n))
+	}
+	if len(failedToParse) > 0 {
+		log.Printf("cannot get '%v' from the sacli output: %v", failedToParse, string(data))
 	}
 	return nil
 }

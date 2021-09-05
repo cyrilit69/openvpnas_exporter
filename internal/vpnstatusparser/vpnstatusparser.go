@@ -12,7 +12,7 @@ import (
 
 /*
 The input for each client will be like this, but in the list format:
-   {
+#   {
 0       "Common Name": "ipupkin",
 1       "Real Address": "17.18.19.20:51979",
 2       "Virtual Address": "10.0.0.206",
@@ -24,7 +24,8 @@ The input for each client will be like this, but in the list format:
 8       "Username": "ipupkin",
 9       "Client ID": "37960",
 10      "Peer ID": "119"
-   }
+    }
+Fields positions seem constant.
 */
 
 type raw struct {

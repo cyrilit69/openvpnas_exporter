@@ -8,25 +8,25 @@ const (
 
 var (
 	// Status metrics
-	summaryParsed = prometheus.NewDesc(
+	statusParsed = prometheus.NewDesc(
 		prometheus.BuildFQName(namespace, "status", "parsed"),
 		"Is 'sacli status' output parsed succesfully",
 		nil, nil,
 	)
 
-	summaryErrors = prometheus.NewDesc(
+	statusErrors = prometheus.NewDesc(
 		prometheus.BuildFQName(namespace, "status", "errors"),
 		"Count of errors in sacli status output",
 		nil, nil,
 	)
 
-	summaryLastRestarted = prometheus.NewDesc(
-		prometheus.BuildFQName(namespace, "status", "last_restarted"),
+	statusLastRestarted = prometheus.NewDesc(
+		prometheus.BuildFQName(namespace, "status", "last_restarted_time"),
 		"Timestamp of the last restart",
 		nil, nil,
 	)
 
-	summaryStatus = prometheus.NewDesc(
+	statusStatus = prometheus.NewDesc(
 		prometheus.BuildFQName(namespace, "status", "service_state"),
 		"States of all services from sacli status output",
 		[]string{"service"}, nil,
@@ -63,7 +63,7 @@ var (
 		"Grace period", nil, nil,
 	)
 	subsLastSuccessfulUpdate = prometheus.NewDesc(
-		prometheus.BuildFQName(namespace, "subscription", "last_successful_update"),
+		prometheus.BuildFQName(namespace, "subscription", "last_successful_update_time"),
 		"Timestamp of the last successful update", nil, nil,
 	)
 	subsLastSuccessfulUpdateAge = prometheus.NewDesc(
@@ -79,7 +79,7 @@ var (
 		"Subscription name", []string{"name"}, nil,
 	)
 	subsNextUpdate = prometheus.NewDesc(
-		prometheus.BuildFQName(namespace, "subscription", "next_update"),
+		prometheus.BuildFQName(namespace, "subscription", "next_update_time"),
 		"Timestamp fo the next update", nil, nil,
 	)
 	subsNextUpdateIn = prometheus.NewDesc(
@@ -111,25 +111,21 @@ var (
 		"Subscription updates failed", nil, nil,
 	)
 	// VPNStatus metrics
-	statusParsed = prometheus.NewDesc(
+	vpnStatusParsed = prometheus.NewDesc(
 		prometheus.BuildFQName(namespace, "vpnstatus", "parsed"),
 		"Is 'sacli VPNStatus' output parsed succesfully",
 		nil, nil,
 	)
-	statusClientInfo = prometheus.NewDesc(
-		prometheus.BuildFQName(namespace, "vpnstatus", "client_info"),
-		"All Clients info", []string{"vpn", "common_name", "id", "peer_id", "real_addr", "vpn_addr"}, nil,
-	)
-	statusClientBytesReceived = prometheus.NewDesc(
-		prometheus.BuildFQName(namespace, "vpnstatus", "client_bytes_received"),
+	vpnStatusClientBytesReceived = prometheus.NewDesc(
+		prometheus.BuildFQName(namespace, "vpnstatus", "client_received_bytes_total"),
 		"Bytes received by client", []string{"vpn", "common_name", "id", "peer_id", "real_addr", "vpn_addr"}, nil,
 	)
-	statusClientBytesSend = prometheus.NewDesc(
-		prometheus.BuildFQName(namespace, "vpnstatus", "client_bytes_send"),
+	vpnStatusClientBytesSend = prometheus.NewDesc(
+		prometheus.BuildFQName(namespace, "vpnstatus", "client_send_bytes_total"),
 		"Bytes sent by client", []string{"vpn", "common_name", "id", "peer_id", "real_addr", "vpn_addr"}, nil,
 	)
-	statusClientConnectedSince = prometheus.NewDesc(
-		prometheus.BuildFQName(namespace, "vpnstatus", "client_connected_since"),
+	vpnStatusClientConnectedSince = prometheus.NewDesc(
+		prometheus.BuildFQName(namespace, "vpnstatus", "client_connection_time"),
 		"Timestamp of the last clients connect", []string{"vpn", "common_name", "id", "peer_id", "real_addr", "vpn_addr"}, nil,
 	)
 )
@@ -139,10 +135,10 @@ var (
 var OpenVpnASMetrics = map[string][]*prometheus.Desc{
 	// The list of exporter metrics from 'sacli status' command
 	"status": []*prometheus.Desc{
-		summaryParsed,
-		summaryErrors,
-		summaryLastRestarted,
-		summaryStatus,
+		statusParsed,
+		statusErrors,
+		statusLastRestarted,
+		statusStatus,
 	},
 	"SubscriptionStatus": []*prometheus.Desc{
 		subsParsed,
@@ -166,10 +162,9 @@ var OpenVpnASMetrics = map[string][]*prometheus.Desc{
 		subsUpdatesFailed,
 	},
 	"VPNStatus": []*prometheus.Desc{
-		statusParsed,
-		statusClientBytesReceived,
-		statusClientBytesSend,
-		statusClientConnectedSince,
-		statusClientInfo,
+		vpnStatusParsed,
+		vpnStatusClientBytesReceived,
+		vpnStatusClientBytesSend,
+		vpnStatusClientConnectedSince,
 	},
 }
