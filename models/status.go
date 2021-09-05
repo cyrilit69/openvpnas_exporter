@@ -14,45 +14,32 @@ import (
 )
 
 type Status struct {
-	// ActiveProfile string
 	ErrorsTotal   float64
 	LastRestarted float64
 	ServiceStatus map[string]float64
 }
-
-// type raw struct {
-// 	ActiveProfile string                 `json:"active_profile"`
-// 	Errors        map[string]interface{} `json:"errors"`
-// 	LR            string                 `json:"last_restarted"`
-// 	ServiceStatus map[string]string      `json:"service_status"`
-// }
 
 func (c *Status) UnmarshalJSON(data []byte) error {
 	var v map[string]interface{}
 	if err := json.Unmarshal(data, &v); err != nil {
 		return err
 	}
-
+	failedToParse := []string{}
 	var ok bool
-
-	// c.ActiveProfile, ok = v["active_profile"].(string)
-	// if !ok {
-	// 	log.Printf("cannot get 'active_profile' from the sacli output: %v", string(data))
-	// }
 
 	errs, ok := v["errors"].(map[string]interface{})
 	if !ok {
-		log.Printf("cannot get 'errors' from the sacli output: %v", string(data))
+		failedToParse = append(failedToParse, "errors")
 	}
 	c.ErrorsTotal = float64(len(errs))
 
 	lr, ok := v["last_restarted"].(string)
 	if !ok {
-		log.Printf("cannot get 'last_restarted' from the sacli output: %v", string(data))
+		failedToParse = append(failedToParse, "last_restarted")
 	}
 	lrt, err := time.Parse(time.ANSIC, lr)
 	if err != nil {
-		log.Printf("cannot parse Last Restart time to time.Time: %v", err)
+		log.Printf("cannot parse Last Restart '%v' time to time.Time: %v", lr, err)
 	}
 	c.LastRestarted = float64(lrt.Unix())
 
@@ -60,7 +47,7 @@ func (c *Status) UnmarshalJSON(data []byte) error {
 
 	ss, ok := v["service_status"].(map[string]interface{})
 	if !ok {
-		log.Printf("cannot get 'service_status' from the sacli output: %v", string(data))
+		failedToParse = append(failedToParse, "service_status")
 	}
 	for k, v := range ss {
 		if v.(string) == "on" {
@@ -68,6 +55,9 @@ func (c *Status) UnmarshalJSON(data []byte) error {
 		} else {
 			c.ServiceStatus[k] = 0
 		}
+	}
+	if len(failedToParse) > 0 {
+		log.Printf("cannot get '%v' from the sacli output: %v", failedToParse, string(data))
 	}
 
 	return nil
